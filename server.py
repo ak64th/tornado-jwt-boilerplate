@@ -16,6 +16,7 @@ import auth
 
 define('debug', default=True, type=bool)
 define('port', default=5001, type=int)
+define('process', default=0, type=int)
 
 define('jwt_secret_key', type=six.string_types)
 define('jwt_algorithm', default='HS256', type=six.string_types)
@@ -58,8 +59,11 @@ def main():
     print('----------------------------------------------')
     print('')
 
-    application.listen(options.port)
-    tornado.ioloop.IOLoop.instance().start()
+    from tornado.httpserver import HTTPServer
+    server = HTTPServer(application)
+    server.bind(options.port)
+    server.start(options.process)
+    tornado.ioloop.IOLoop.current().start()
 
 
 if __name__ == '__main__':
